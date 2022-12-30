@@ -13,19 +13,21 @@ datasource db {
 
 // Necessary for Next auth
 model Account {
-  id                String  @id @default(cuid())
+  id                String   @id @default(cuid())
   userId            String
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
+  refresh_token     String?  @db.Text
+  access_token      String?  @db.Text
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.Text
+  id_token          String?  @db.Text
   session_state     String?
-  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 
   @@unique([provider, providerAccountId])
 }
@@ -36,20 +38,22 @@ model Session {
   userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @default(now()) @updatedAt
 }
 
 model User {
-  id             String        @id @default(cuid())
-  name           String?
-  email          String?       @unique
-  emailVerified  DateTime?
-  image          String?
-  accounts       Account[]
-  sessions       Session[]
-  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  organizationId String?
-
-  @@index([organizationId])
+  id                  String               @id @default(cuid())
+  name                String?
+  email               String?              @unique
+  emailVerified       DateTime?
+  image               String?
+  accounts            Account[]
+  sessions            Session[]
+  organizations       Organization[]
+  organizationMembers OrganizationMember[]
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @default(now()) @updatedAt
 }
 
 model VerificationToken {
@@ -61,12 +65,27 @@ model VerificationToken {
 }
 
 model Organization {
-  id          String  @id @default(cuid())
-  name        String
-  description String?
-  url         String?
-  logo        String?
-  members     User[]
+  id                  String               @id @default(cuid())
+  name                String
+  description         String?
+  url                 String?
+  logo                String?
+  owner               User                 @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId             String
+  organizationMembers OrganizationMember[]
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @default(now()) @updatedAt
+}
+
+model OrganizationMember {
+  id             String       @id @default(cuid())
+  role           String?
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organizationId String
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId         String
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @default(now()) @updatedAt
 }
 
 model Post {
@@ -78,7 +97,7 @@ model Post {
   publishedAt DateTime
   attachments Attachment[]
   createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  updatedAt   DateTime     @default(now()) @updatedAt
 }
 
 model Attachment {

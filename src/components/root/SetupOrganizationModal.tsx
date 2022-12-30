@@ -10,8 +10,10 @@ import {
 } from "@chakra-ui/react";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/router";
+import { isEmpty } from "radash";
 import type { FunctionComponent } from "react";
 import { useEffect, useRef } from "react";
+import useUserStore from "../../stores/userStore";
 
 type SetupOrganizationModalProps = {
   hasOrganization: boolean;
@@ -23,6 +25,8 @@ const SetupOrganizationModal: FunctionComponent<
 > = ({ hasOrganization, isFetched }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const router = useRouter();
+  const user = useUserStore((state) => state.user);
+  const isLoggedIn = !isEmpty(user?.id);
 
   const cancelRef = useRef(null);
 
@@ -40,11 +44,12 @@ const SetupOrganizationModal: FunctionComponent<
     if (
       !hasOrganization &&
       router.pathname !== "/organization/setup" &&
-      isFetched
+      isFetched &&
+      isLoggedIn
     ) {
       onOpen();
     }
-  }, [hasOrganization, onOpen, router.pathname, isFetched]);
+  }, [hasOrganization, onOpen, router.pathname, isFetched, isLoggedIn]);
 
   return (
     <AlertDialog

@@ -1,6 +1,8 @@
-# Create T3 App
+# Ninja Request
+- It's a google form but it's not. 
+- You can restrict user to login with many social apps you want or just anonymous
+- You can post the result to social media
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
 
 ## What's next? How do I make an app with this?
 
@@ -11,7 +13,6 @@ If you are not familiar with the different technologies used in this project, pl
 - [Next.js](https://nextjs.org)
 - [NextAuth.js](https://next-auth.js.org)
 - [Prisma](https://prisma.io)
-- [Tailwind CSS](https://tailwindcss.com)
 - [tRPC](https://trpc.io)
 
 ## Learn More

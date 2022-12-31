@@ -11,6 +11,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import type { SetupOrganizationParamsType } from "../../../server/trpc/schema/organizations";
 import { SetupOrganizationSchema } from "../../../server/trpc/schema/organizations";
 import { trpc } from "../../../utils/trpc";
+import { useRouter } from "next/router";
 
 const SetupForm = () => {
   const {
@@ -20,10 +21,11 @@ const SetupForm = () => {
   } = useForm<SetupOrganizationParamsType>({
     resolver: zodResolver(SetupOrganizationSchema),
   });
+  const router = useRouter();
 
   const setupOrganization = trpc.organization.setupOrganization.useMutation({
-    onSuccess: (data) => {
-      console.log(data);
+    onSuccess: ({ id }) => {
+      router.push(`/organization/${id}`);
     },
   });
 

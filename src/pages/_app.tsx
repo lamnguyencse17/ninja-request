@@ -21,7 +21,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
       <SessionProvider session={session}>
         <Box width="100%" height="100%">
           <Navbar />
-          <Container>
+          <Container maxW="container.lg">
             <Component {...pageProps} />
           </Container>
         </Box>

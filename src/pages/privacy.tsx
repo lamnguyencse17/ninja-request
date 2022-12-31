@@ -72,10 +72,10 @@ const PrivacyPage = () => {
         </Text>
         <Heading size="md">Cookies</Heading>
         <Text>
-          Like most modern websites, CrushNinja uses cookies to support critical
-          site functions such as user authentication. No guarantees are made
-          about the functionality or usability of the CrushNinja platform if
-          cookies are disabled.
+          Like most modern websites, Ninja Request uses cookies to support
+          critical site functions such as user authentication. No guarantees are
+          made about the functionality or usability of the Ninja Request
+          platform if cookies are disabled.
         </Text>
         <Heading size="md">Information disclosure</Heading>
         <Text>
@@ -92,13 +92,13 @@ const PrivacyPage = () => {
         <Heading size="md">Data Deletion</Heading>
         <Text>
           Users have the right to request that their data, as described above,
-          be deleted from the CrushNinja platform. To do so, send us a message
-          through one of the communication channels listed on the "Help /
-          Contact Us" page. We will then attempt to remove the aforementioned
-          data to the maximum technological extent possible. Please note that
-          CrushNinja is not responsible for the deletion or removal of any user
-          data that may be collected or preserved by third-party services or
-          applications.
+          be deleted from the Ninja Request platform. To do so, send us a
+          message through one of the communication channels listed on the
+          &quot;Help / Contact Us&quot; page. We will then attempt to remove the
+          aforementioned data to the maximum technological extent possible.
+          Please note that Ninja Request is not responsible for the deletion or
+          removal of any user data that may be collected or preserved by
+          third-party services or applications.
         </Text>
       </main>
     </>

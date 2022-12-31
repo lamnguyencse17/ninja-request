@@ -1,8 +1,6 @@
 import { isEmpty, shake } from "radash";
-import {
-  QueryOrganizationSchema,
-  SetupOrganizationParamsType,
-} from "../schema/organizations";
+import type { SetupOrganizationParamsType } from "../schema/organizations";
+import { QueryOrganizationSchema } from "../schema/organizations";
 import { SetupOrganizationSchema } from "../schema/organizations";
 import { protectedProcedure } from "../trpc";
 

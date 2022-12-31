@@ -54,6 +54,8 @@ model User {
   organizationMembers OrganizationMember[]
   createdAt           DateTime             @default(now())
   updatedAt           DateTime             @default(now()) @updatedAt
+  form                Form[]
+  attachments         Attachment[]
 }
 
 model VerificationToken {
@@ -65,16 +67,22 @@ model VerificationToken {
 }
 
 model Organization {
-  id                  String               @id @default(cuid())
-  name                String
-  description         String?
-  url                 String?
-  logo                String?
+  id          String  @id @default(cuid())
+  name        String
+  description String?
+  url         String?
+  logo        String?
+
   owner               User                 @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   ownerId             String
   organizationMembers OrganizationMember[]
-  createdAt           DateTime             @default(now())
-  updatedAt           DateTime             @default(now()) @updatedAt
+
+  forms Form[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@index([ownerId])
 }
 
 model OrganizationMember {
@@ -84,31 +92,116 @@ model OrganizationMember {
   organizationId String
   user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId         String
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @default(now()) @updatedAt
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@unique([organizationId, userId])
 }
 
-model Post {
+model Form {
+  id          String       @id @default(cuid())
+  name        String
+  description String?
+  url         String?
+  logo        String?
+  submissions Submission[]
+  questions   Question[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  createdBy      User          @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  createdById    String
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+  organizationId String?
+
+  @@index([createdById])
+  @@index([organizationId])
+}
+
+model Question {
+  id   String @id @default(cuid())
+  name String
+
+  content String?  @db.Text
+  choices String[] @db.Text
+
+  attachment   Attachment? @relation(fields: [attachmentId], references: [id])
+  attachmentId String?     @unique
+
+  questionType   QuestionType @relation(fields: [questionTypeId], references: [id])
+  questionTypeId String
+  form           Form         @relation(fields: [formId], references: [id], onDelete: Cascade)
+  formId         String
+
+  answers Answer[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model Submission {
   id          String       @id @default(cuid())
   title       String
-  slug        String       @unique
   content     String       @db.Text
   published   Boolean      @default(false)
   publishedAt DateTime
   attachments Attachment[]
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @default(now()) @updatedAt
+  form        Form?        @relation(fields: [formId], references: [id])
+  formId      String?
+  answers     Answer[]
+
+  @@index([formId])
+}
+
+model Answer {
+  id           String     @id @default(cuid())
+  content      String?    @db.Text
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @default(now()) @updatedAt
+  submission   Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  submissionId String
+
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  questionId String
+
+  attachment   Attachment? @relation(fields: [attachmentId], references: [id])
+  attachmentId String?     @unique
+
+  @@index([submissionId, questionId])
 }
 
 model Attachment {
-  id        String   @id @default(cuid())
-  name      String
-  url       String
-  size      Int
-  type      String
-  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
-  postId    String
-  createdAt DateTime @default(now())
+  id   String @id @default(cuid())
+  name String
+  url  String
+  size Int
+  type String
 
-  @@index([postId])
+  submission   Submission? @relation(fields: [submissionId], references: [id])
+  submissionId String?
+
+  createdAt   DateTime @default(now())
+  createdBy   User     @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  createdById String
+
+  answer     Answer?
+  answerId   String?
+  question   Question?
+  questionId String?
+
+  @@index([submissionId])
+  @@index([answerId])
+  @@index([questionId])
+}
+
+model QuestionType {
+  id        String     @id @default(cuid())
+  name      String     @unique
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @default(now()) @updatedAt
+  questions Question[]
 }
